@@ -8,7 +8,7 @@ export const normalizeResponseErrors = res => {
     }
     return Promise.reject({
       code: res.status,
-      message: res.statusText
+      message: res.statusText,
     });
   }
   return res;
