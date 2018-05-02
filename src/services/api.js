@@ -1,33 +1,31 @@
-import { loadAuthToken } from '../local-storage'
+import { loadAuthToken } from '../local-storage';
+import { API_BASE_URL } from '../config';
 
-const baseUrl = 'http://localhost:8080/api';
 let token;
 
 const getToken = () => {
   if (token != null) {
-    return token;
+    return;
   }
   token = loadAuthToken();
-  return token;
-}
+};
 
 export const Fetch = (path, method = 'GET', data = undefined) => {
-
   getToken();
 
   let headers;
   if (token) {
     headers = {
-      authorization: `Bearer ${token}`
-    }
+      authorization: `Bearer ${token}`,
+    };
   }
 
-  console.log('token and header ----->', token, headers)
+  console.log('token and header ----->', token, headers);
 
-  return fetch(`${baseUrl}/${path}`, {
+  return fetch(`${API_BASE_URL}/${path}`, {
     method,
     body: JSON.stringify(data),
-    headers
+    headers,
   }).then(res => {
     if (res.status >= 400) {
       throw new Error(res.statusText);
@@ -35,6 +33,14 @@ export const Fetch = (path, method = 'GET', data = undefined) => {
 
     return res.json();
   });
+};
+
+export const AuthServices = {
+  basePath: 'auth',
+
+  login(data) {
+    return Fetch(`${this.basePath}/login`, 'POST', data);
+  },
 };
 
 export const AdsServices = {
@@ -45,7 +51,7 @@ export const AdsServices = {
   },
 
   getMyAds() {
-    return Fetch(this.basePath + '/me');
+    return Fetch(`${this.basePath}/me`);
   },
 
   createAds(name) {
@@ -53,16 +59,16 @@ export const AdsServices = {
   },
 
   deleteAd(id) {
-    return Fetch(`${this.basePath}/${id}`)
+    return Fetch(`${this.basePath}/${id}`);
   },
 
   getAd(id) {
-    return Fetch(`${this.basePath}/${id}`)
+    return Fetch(`${this.basePath}/${id}`);
   },
 
   updateAd(id, name) {
-    return Fetch(`${this.basePath}/${id}`, 'PUT', { name })
-  }
+    return Fetch(`${this.basePath}/${id}`, 'PUT', { name });
+  },
 };
 
 // const UserServices = {
@@ -119,11 +125,6 @@ export const AdsServices = {
 //   }
 
 //   export default App;
-
-
-
-
-
 
 //   export const signupUser = (userData) => (dispatch) => {
 //     dispatch({ type: 'SIGNUP_REQUEST' });
